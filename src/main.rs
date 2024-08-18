@@ -4,13 +4,17 @@ use axum::{
     routing::get,
     Router,
 };
+use tenor::queries::types::random_cat_gif_query;
+use tera::{Context, Tera};
 use tokio::{self, signal};
 
 use anyhow;
 use tracing::{event, Level};
 use tracing_subscriber::{fmt, layer::SubscriberExt as _, util::SubscriberInitExt as _, EnvFilter};
 
+use reqwest;
 use serde::{self, Deserialize};
+use serde_json;
 use toml;
 
 #[derive(Deserialize)]
@@ -27,6 +31,11 @@ struct ServerConfig {
 struct TraceConfig {
     logging_level: String,
 }
+
+pub mod representation;
+pub mod tenor;
+
+use representation::html::{get_home_html, random_cat_gif::get_random_cat_gif_html};
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> anyhow::Result<()> {
@@ -46,7 +55,7 @@ async fn main() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/", get(home_handler))
-        .route("/random_gif", get(random_gif));
+        .route("/random_cat_gif", get(random_gif));
     let listener = tokio::net::TcpListener::bind(format!("{host}:{port}")).await?;
 
     event!(Level::DEBUG, "Server start listening");
@@ -59,25 +68,30 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn home_handler() -> Result<Html<String>, impl IntoResponse> {
-    event!(Level::DEBUG, "Client connected to home");
+    event!(Level::DEBUG, "Client connected to `/`");
 
-    let home_html_path = "src/public/home.html";
-
-    let home_html_str = match tokio::fs::read_to_string(home_html_path).await {
-        Ok(home_html_str) => home_html_str,
-        Err(err) => {
-            return Err((
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Server error: {err}"),
-            ))
-        }
+    let home_html = match get_home_html().await {
+        Ok(home_html) => home_html,
+        Err(err) => return Err(err),
     };
 
-    Ok(Html::from(home_html_str))
+    Ok(home_html)
 }
 
-async fn random_gif() -> impl IntoResponse {
-    Html("should get gif")
+async fn random_gif() -> Result<Html<String>, impl IntoResponse> {
+    event!(Level::DEBUG, "Client connected to `/random_cat_gif`");
+
+    let tenor_results = match random_cat_gif_query().await {
+        Ok(home_html) => home_html,
+        Err(err) => return Err(err),
+    };
+
+    let random_cat_gif_html = match get_random_cat_gif_html(tenor_results).await {
+        Ok(home_html) => home_html,
+        Err(err) => return Err(err),
+    };
+
+    Ok(random_cat_gif_html)
 }
 
 async fn shutdown_signal() {
