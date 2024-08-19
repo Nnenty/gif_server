@@ -1,20 +1,16 @@
 use axum::{
-    http::StatusCode,
     response::{Html, IntoResponse},
     routing::get,
     Router,
 };
 use tenor::queries::types::random_cat_gif_query;
-use tera::{Context, Tera};
 use tokio::{self, signal};
 
 use anyhow;
 use tracing::{event, Level};
 use tracing_subscriber::{fmt, layer::SubscriberExt as _, util::SubscriberInitExt as _, EnvFilter};
 
-use reqwest;
 use serde::{self, Deserialize};
-use serde_json;
 use toml;
 
 #[derive(Deserialize)]
@@ -35,7 +31,7 @@ struct TraceConfig {
 pub mod representation;
 pub mod tenor;
 
-use representation::html::{get_home_html, random_cat_gif::get_random_cat_gif_html};
+use representation::html::{get_home_html, get_random_cat_gif_html};
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> anyhow::Result<()> {
