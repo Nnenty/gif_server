@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-pub struct TenorWebpFormat {
+pub struct Webp {
     pub url: String,
 }

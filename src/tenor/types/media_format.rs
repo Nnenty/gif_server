@@ -4,16 +4,16 @@ mod gif;
 mod mp4;
 mod webp;
 
-use gif::TenorGifFormat;
-use mp4::TenorMp4Format;
-use webp::TenorWebpFormat;
+use gif::Gif;
+use mp4::Mp4;
+use webp::Webp;
 
 #[derive(Deserialize, Debug)]
-pub struct TenorMedia(pub Vec<TenorFormat>);
+pub struct Media(pub Vec<Format>);
 
 #[derive(Deserialize, Debug)]
-pub struct TenorFormat {
-    pub gif: TenorGifFormat,
-    pub webp: TenorWebpFormat,
-    pub mp4: TenorMp4Format,
+pub struct Format {
+    pub gif: Gif,
+    pub webp: Webp,
+    pub mp4: Mp4,
 }

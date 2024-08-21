@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-pub struct TenorGifFormat {
+pub struct Gif {
     pub url: String,
 }
