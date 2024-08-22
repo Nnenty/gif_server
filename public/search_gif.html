@@ -10,7 +10,6 @@
                 <input type="text" id="search" name="search" placeholder="GIF you want to search">
                 <button type="submit">Search</button>
             </form>
-            <a href="/"><h4>Return to home page</h4></a>
             {% if gifs %}
                 {% for gif in gifs %}
                     {% set i = loop.index %}
@@ -19,8 +18,9 @@
                     {% endif %}
                         <img src={{gif}} alt={{gifs_description[loop.index0]}}>
                 {% endfor %}
-                <a href="/search_gif?search={{url_query}}"><h3>Next GIFs under the request `{{search_query}}`</h3></a>
+                <a href="/search_gif?search={{url_query}}"><h4>Next GIFs under the request `{{search_query}}`</h4></a>
             {% endif %}
+            <a href="/"><h4>Return to home page</h4></a>
         </div>
     </body>
 </html>
