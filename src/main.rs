@@ -122,27 +122,30 @@ async fn search_gif(
 
     event!(Level::DEBUG, "{:?}", params);
 
-    let search_gif_html_without_params: Html<String> = match get_search_gif_html(None, None).await {
-        Ok(search_gif_html) => search_gif_html,
-        Err(err) => {
-            return Err((
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Server error: {err}"),
-            ))
-        }
-    };
+    let search_gif_html_without_params: Html<String> =
+        match get_search_gif_html(None, None, None).await {
+            Ok(search_gif_html) => search_gif_html,
+            Err(err) => {
+                return Err((
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Server error: {err}"),
+                ))
+            }
+        };
 
     if params.keys().next().is_none() {
         return Ok(search_gif_html_without_params);
     }
 
-    if let Some(param) = params.values().next() {
-        if param.as_str().cmp("").is_eq() {
-            return Ok(search_gif_html_without_params);
-        }
+    if params
+        .values()
+        .next()
+        .is_some_and(|param| param.as_str().cmp("").is_eq())
+    {
+        return Ok(search_gif_html_without_params);
     }
 
-    let tenor_results = match search_gif_query(params).await {
+    let tenor_results = match search_gif_query(&params).await {
         Ok(home_html) => home_html,
         Err(err) => {
             return Err((
@@ -155,6 +158,8 @@ async fn search_gif(
     let search_gif_html: Html<String> = match get_search_gif_html(
         Some(tenor_results.get_all_gifs_url()),
         Some(tenor_results.get_all_gifs_description()),
+        // unwrap because we checked for the presence of the parameter above
+        Some(params.values().next().unwrap()),
     )
     .await
     {

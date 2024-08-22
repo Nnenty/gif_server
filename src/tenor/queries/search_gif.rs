@@ -4,7 +4,7 @@ use crate::tenor::Results;
 
 use super::{constants::TENOR_RANDOM_QUERY_ADDRESS, errors::QueryError};
 
-pub async fn search_gif_query(params: HashMap<String, String>) -> Result<Results, QueryError> {
+pub async fn search_gif_query(params: &HashMap<String, String>) -> Result<Results, QueryError> {
     let key_name = params.keys().next().expect("parameter should be set");
     let query_param: &str = params
         .get(key_name)
