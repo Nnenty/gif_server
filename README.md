@@ -1,6 +1,6 @@
 <h1 align="center">gif_server</h1>
 <div align="center">
-    Simple server to search gif
+    Simple server to search GIFs
 </div>
 
 <h2>Run server</h2>
