@@ -48,7 +48,7 @@ impl Results {
 
 #[cfg(test)]
 mod _results_tests {
-    use crate::tenor::queries::random_cat_gif_query;
+    use crate::tenor::queries::random_cat_gif as random_cat_gif_query;
 
     #[tokio::test]
     async fn test_get_next_pos() {

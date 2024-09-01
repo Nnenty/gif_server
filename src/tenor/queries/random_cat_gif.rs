@@ -3,7 +3,7 @@ use rand::{self, Rng};
 
 use super::{constants::TENOR_RANDOM_QUERY_ADDRESS, errors::QueryError};
 
-pub async fn random_cat_gif_query() -> Result<Results, QueryError> {
+pub async fn random_cat_gif() -> Result<Results, QueryError> {
     let rand_query_range = rand::thread_rng().gen_range(0..14);
 
     let query = match rand_query_range {
@@ -37,7 +37,7 @@ pub async fn random_cat_gif_query() -> Result<Results, QueryError> {
         Err(err) => return Err(err.into()),
     };
 
-    let resp_json = resp.text().await.unwrap();
+    let resp_json = resp.text().await?;
     let tenor_results: Results = match serde_json::from_str(&resp_json) {
         Ok(value) => value,
         Err(err) => return Err(err.into()),

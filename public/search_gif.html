@@ -18,7 +18,7 @@
                     {% endif %}
                         <img src={{gif}} alt={{gifs_description[loop.index0]}}>
                 {% endfor %}
-                <a href="/search_gif?search={{url_query}}"><h4>Next GIFs under the request `{{search_query}}`</h4></a>
+                <a href="/search_gif?search={{params}}"><h4>Next GIFs under the request `{{user_query}}`</h4></a>
             {% endif %}
             <a href="/"><h4>Return to home page</h4></a>
         </div>
